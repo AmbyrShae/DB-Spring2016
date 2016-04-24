@@ -161,3 +161,9 @@ CREATE TABLE Takes
   FOREIGN KEY (per_id) REFERENCES Person(per_id),
   FOREIGN KEY (year, sec_no, c_code, semester) REFERENCES Section(year, sec_no, c_code, semester)
 );
+
+CREATE OR REPLACE TABLE CourseSet (
+csetID NUMBER(8, 0) PRIMARY KEY,
+c_code1 NUMBER(6, 0), c_code2 NUMBER(6, 0), c_code3 NUMBER(6, 0), size NUMBER(2, 0) /* number of courses */
+);
+

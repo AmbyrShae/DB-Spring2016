@@ -18,6 +18,43 @@ insert into job_company values(13, 800);
 insert into job_company values(14, 800);
 insert into job_company values(15, 200);
 
+--added to Bre's database 
+insert into job_profile values(90000.00, 'a job', 'president', 11); --**No one qualifies for
+insert into course values('medium', 'active', 'sql', 'sql 101', 1200, 200.00); --NEW
+insert into knowledge_skill values(1410, 'database', 'database lab', 'medium'); --NEW
+insert into teaches values(1410, 1200); -- database taught in sql 101 --NEW
+insert into section values('online-selfpaced', '20-OCT-2014', 2014, 13, 100.00,'Fall', 1200); --Section for sql 101 --NEW
+insert into offers values(100, 2014, 13, 1200, 'Fall'); --Sql 101 section offered at GE in 2014 --NEW
+insert into skills values(1410, 1); -- Database is required for backend developer  --NEW
+insert into experience values(8880000, 2000); --Alex has Java experience --NEW2
+insert into takes values(8880000, 2013, 1, 10, 'Spring'); --Alex took Data structures at GE in 2013 --NEW2
+insert into job values(11, 'full-time', 100000.00, 'salary', 11); --NEW3
+insert into company values(900, 'DC','Washington','Pennsylvania Ave.', 20500, 'whiteHouse', 'whiteHouse.com'); --NEW3
+insert into job_company values(11, 900); --President at White House --New3
+insert into company_speciality values('power',900); --power at White House --NEW3
+insert into course values('advance', 'active', 'politics', 'politics 500', 1300, 900.00); --NEW3
+insert into knowledge_skill values(1510, 'rule the US', 'rule the US', 'advance'); --NEW3
+insert into teaches values(1510, 1300); -- rule the US taught in politics 500 --NEW3
+insert into skills values(1510, 11); -- Rule the US is required for president  --NEW3
+insert into section values('correspondence', '20-NOV-2015', 2015, 14, 900.00,'Fall', 1300); --Section for rule the US --NEW3
+insert into offers values(900, 2015, 14, 1300, 'Fall'); --politics 500 section offered at White House in 2015 --NEW3
+insert into knowledge_skill values(1610, 'master in bio', 'degree in bio', 'advance'); --NEW4
+insert into teaches values(1610, 300); -- taxonomy needed for masters in bio --NEW4 -NOTE: I DONT HAVE A JOB_PROFILE THAT NEEDS MASTERS IN BIO YET
+insert into teaches values(1610, 1000); -- laboratory needed for masters in bio --NEW4
+insert into teaches values(1610, 1100); -- micro bio needed for masters in bio --NEW4
+insert into skills values(3300, 11); -- Management is required for president  --NEW4
+insert into skills values(4400, 11); -- Public Speaking is required for president  --NEW4
+insert into experience values(3330000, 3300); --Sabrina has management experience --New4
+insert into takes values(3330000, 2000, 3, 220, 'Spring'); --Sabrina took management 101 at Quiznos in 2000 --NEW4
+insert into section values('classroom', '20-SEP-2016', 2016, 15, 50.00,'Fall', 220); --Section for management 101 --NEW5 Second section for management 101
+insert into offers values(200, 2016, 15, 220, 'Fall'); --Management 101 section offered at Quiznos in 2016 --NEW5
+insert into course values('advance', 'active', 'allBio', 'bio 6000', 1400, 999.00); --NEW6 --Added to make a course cover a skill set
+insert into teaches values(1100, 1400); -- Taxonomy taught in allBio --NEW6
+insert into teaches values(1310, 1400); -- micro bio taught in allBio --New6
+insert into teaches values(1210, 1400); -- laboratory taught in allBio --New6
+insert into section values('classroom', '20-OCT-2016', 2016, 16, 100.00,'Fall', 1400); --Section for allBio --NEW6 Section for a course that covers all the skills needed for bio teacher
+insert into offers values(150, 2016, 16, 1400, 'Fall'); --allBio section offered at Orange High School in 2016 --New6
+
 
 --job_profile(avg_pay, description, title, pos_code)
 insert into job_profile values(70000.00, 'app developer', 'backend developer', 1);
