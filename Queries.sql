@@ -349,6 +349,20 @@ WHERE NOT EXISTS
 -- 18. When a company cannot find any qualified person for a job, a secondary solution is to find a person who is almost
 -- qualified to the job. Make a “missing-one” list that lists people who miss only one skill for a specified job profile.
 --**WORKS** Returns 10000000(Dave) and 8880000(Alex)
+WITH skill_count(per_id, skill_count) AS (
+  SELECT per_id, COUNT(ks_code)
+  FROM experience NATURAL JOIN skills
+  WHERE pos_code = 1
+  GROUP BY per_id
+)
+
+SELECT per_id
+FROM skill_count
+WHERE skill_count = (SELECT COUNT(*) -1 FROM skills WHERE pos_code =1);
+------------------------------------------------
+--The query below is the old one 
+------------------------------------------------
+
 SELECT per_id
 FROM experience NATURAL JOIN skills
 WHERE pos_code = 1
@@ -357,18 +371,6 @@ HAVING
   (SELECT COUNT (*)
   FROM skills
   WHERE pos_code = 1) - COUNT(per_id) = 1;
----------------------------------------------------
-WITH skill_count(per_id, skill_count) AS (
-  SELECT per_id, COUNT(ks_code)
-  FROM experience NJ required_skills
-  WHERE pos_code = #
-  GROUP BY per_id
-)
-
-SELECT per_id
-FROM skill_count
-WHERE skill_count = (SELECT s)
--- Check division slide 15 ^
 
 -- 19. List the skillID and the number of people in the missing-one list for a given job profile in the ascending order of
 -- the people counts. **WORKS** RETURNS KS_CODE(1410) NUM_PERSON(2)
