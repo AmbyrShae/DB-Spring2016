@@ -514,3 +514,15 @@ FROM qualified;
 
 --  30. List all the courses, directly or indirectly required, that a person has to take in order to be qualified for a job of the
 -- ￼given profile, according to his/her skills possessed and courses taken.
+-- **WORKS** Returns ks_codes 1510 & 4400 for Pujah applying for president, also c_codes 1300 & 350 which teach the ks_codes
+WITH missing_skills AS(
+  SELECT ks_code
+  FROM skills
+  WHERE pos_code = 11
+  MINUS
+  SELECT ks_code
+  FROM experience
+  WHERE per_id = 1234567)
+
+SELECT c_code, ks_code, title, description
+FROM missing_skills NATURAL JOIN teaches NATURAL JOIN course;
