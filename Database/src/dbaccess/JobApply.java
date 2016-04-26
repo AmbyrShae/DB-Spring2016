@@ -120,7 +120,8 @@ public class JobApply {
 				+ "WHERE CSSk.csetID = Cset.csetID ) ) "
 				+ "/* to find the  sets */ "
 				+ "SELECT c_code1, c_code2, c_code3 "
-				+ "FROM Cover_CSet NATURAL JOIN CourseSet) ";
+				+ "FROM Cover_CSet NATURAL JOIN CourseSet) "
+				+ "FETCH FIRST 1 ROWS ONLY";
 				Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(str);
 		return rs;
