@@ -310,21 +310,28 @@ FROM Experience
 WHERE per_id = 2220000));
 
 -- 16. Find the job with the highest pay rate for a person according to his/her skill qualification. **WORKS**
--- Returns game developer 50000
+-- Returns game developer 65000
 WITH jobs_qualified AS
-  (SELECT title, avg_pay
-  FROM Job_Profile job_profile
-  WHERE NOT EXISTS
-    ((SELECT skills.ks_code
-    FROM Skills skills
-    WHERE job_profile.pos_code = skills.pos_code)
-    MINUS
-    (SELECT ks_code
-    FROM Experience
-    WHERE per_id = 2220000)))
-SELECT title, avg_pay
-FROM jobs_qualified
-WHERE avg_pay = (SELECT MAX(avg_pay) FROM jobs_qualified);
+  (SELECT pos_code, title
+    FROM Job_Profile jp
+    WHERE NOT EXISTS
+      ((SELECT s.ks_code
+      FROM Skills s
+      WHERE jp.pos_code = s.pos_code)
+      MINUS
+      (SELECT ks_code
+      FROM Experience
+      WHERE per_id = 2220000))),
+job_pay(job_code, amount) AS
+  (SELECT job_code,
+      CASE
+          WHEN pay_type = 'salary' THEN pay_rate
+          ELSE pay_rate * 1920
+      END
+    FROM job)
+SELECT job_code, title, amount
+FROM jobs_qualified NATURAL JOIN job_pay NATURAL JOIN job
+WHERE amount = (SELECT MAX(amount) FROM jobs_qualified NATURAL JOIN job_pay NATURAL JOIN job);
 
 -- 17. List all the names along with the emails of the persons who are qualified for a job profile. **WORKS**
 -- Returns Lisa and Pujah with their emails
