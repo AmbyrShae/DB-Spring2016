@@ -127,7 +127,7 @@ public class ChangeCourseStatusView extends javax.swing.JFrame {
 		try {
 			ae.changeStatus(newC_code, newStatus);
 		
-			msgArea.append("\nEmployee inserted successfully");
+			msgArea.append("\nStatus changed successfully");
 		} catch (SQLException sqle) {
 			msgArea.append("\n" + sqle.toString());
 		}

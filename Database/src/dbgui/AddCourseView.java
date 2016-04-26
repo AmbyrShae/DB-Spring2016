@@ -173,7 +173,7 @@ public class AddCourseView extends javax.swing.JFrame {
 		try {
 			ae.insertCourse(course);
 		
-			msgArea.append("\nEmployee inserted successfully");
+			msgArea.append("\nCourse inserted successfully");
 		} catch (SQLException sqle) {
 			msgArea.append("\n" + sqle.toString());
 		}
