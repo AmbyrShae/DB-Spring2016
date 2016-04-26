@@ -484,6 +484,9 @@ FROM count_employees
 WHERE employees = (SELECT MAX(employees) FROM count_employees);
 
 -- 28. Find the job profiles that have the most openings due to lack of qualified workers. NOT WORKING
+-- As of now, I find all the job openings, count them and list them in desc order by their count
+-- and correlation to pos code. Now I need to ignore a position by finding people who are qualified
+-- for the job because all we care about is who we can train for a job.
 WITH everyone AS
   (SELECT *
   FROM has_job FULL OUTER JOIN person USING (per_id)),
@@ -495,22 +498,24 @@ unemployed AS
   FROM everyone
   WHERE start_date IS NOT NULL AND end_date IS NULL)),
 openings AS
+  (SELECT job_code, pos_code
+   FROM
   ((SELECT job_code
       FROM job)
       MINUS
       (SELECT job_code
       FROM has_job
-      WHERE end_date IS NULL)),
-qualified AS
-  (SELECT name, per_id
-    FROM unemployed NATURAL JOIN experience
-    WHERE ks_code = ALL (SELECT ks_code
-                          FROM openings NATURAL JOIN job NATURAL JOIN skills))
-SELECT name
-FROM qualified;
+      WHERE end_date IS NULL)) NATURAL JOIN job)
+SELECT pos_code,COUNT(job_code) AS numOfOpenings
+FROM openings
+GROUP BY pos_code
+ORDER BY numOfOpenings DESC;
 
 -- 29. Find the courses that can help most jobless people find a job by training them toward the job profiles that have the
 -- most openings due to lack of qualified workers.
+find the max count from above and figure out which position it is for. Then use the below query to find the courses
+needed to gain all experience for the pos_code with the most openings.
+
 
 --  30. List all the courses, directly or indirectly required, that a person has to take in order to be qualified for a job of the
 -- ￼given profile, according to his/her skills possessed and courses taken.
