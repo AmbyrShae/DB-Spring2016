@@ -538,10 +538,55 @@ WHERE numofopenings - coalesce(numOfQual,0) > 0
 ORDER BY openings DESC;
 
 -- 29. Find the courses that can help most jobless people find a job by training them toward the job profiles that have the
--- most openings due to lack of qualified workers.
-find the max count from above and figure out which position it is for. Then use the below query to find the courses
-needed to gain all experience for the pos_code with the most openings.
-
+-- most openings due to lack of qualified workers. **WORKS** Return c_code 220 with ks_code 3300 which is the ks_code for
+-- manager which is the job with the highest openings.
+WITH everyone AS
+  (SELECT *
+  FROM has_job FULL OUTER JOIN person USING (per_id)),
+unemployed AS
+  ((SELECT name, per_id
+  FROM everyone)
+  MINUS
+  (SELECT name, per_id
+  FROM everyone
+  WHERE start_date IS NOT NULL AND end_date IS NULL)),
+openings AS
+  (SELECT job_code, pos_code
+   FROM
+  ((SELECT job_code
+      FROM job)
+      MINUS
+      (SELECT job_code
+      FROM has_job
+      WHERE end_date IS NULL)) NATURAL JOIN job),
+qualified AS
+  (SELECT DISTINCT name, per_id, pos_code
+    FROM unemployed u, openings o
+    WHERE NOT EXISTS (SELECT ks_code
+                      FROM openings NATURAL JOIN skills
+                      WHERE job_code = o.job_code
+                      MINUS
+                      SELECT ks_code
+                      FROM unemployed NATURAL JOIN experience
+                      WHERE per_id = u.per_id)),
+count_openings AS
+  (SELECT pos_code,COUNT(job_code) AS numOfOpenings
+    FROM openings
+    GROUP BY pos_code),
+count_qualified AS
+  (SELECT COUNT(pos_code) AS numOfQual, pos_code
+  FROM qualified
+  GROUP BY pos_code),
+max_opening AS
+  (SELECT title, pos_code, numofopenings - coalesce(numOfQual,0) AS openings
+    FROM (count_qualified FULL OUTER JOIN count_openings USING (pos_code)) NATURAL JOIN job_profile
+    WHERE numofopenings - coalesce(numOfQual,0) = (SELECT MAX(numofopenings - coalesce(numOfQual,0))
+                                                FROM (count_qualified FULL OUTER JOIN count_openings USING (pos_code)) NATURAL JOIN job_profile)),
+skills_needed AS
+  (SELECT ks_code
+    FROM max_opening NATURAL JOIN skills)
+SELECT c_code, ks_code, title, description
+FROM skills_needed NATURAL JOIN teaches NATURAL JOIN course;
 
 --  30. List all the courses, directly or indirectly required, that a person has to take in order to be qualified for a job of the
 -- ￼given profile, according to his/her skills possessed and courses taken.
