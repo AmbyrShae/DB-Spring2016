@@ -66,19 +66,19 @@ FROM Knowledge_Skill NATURAL JOIN missing_skills;
 --**WORKS**RETURNS 1400(C_CODE) AND BIO 6000
 
 WITH skill_set AS(
-        (SELECT ks_code 
-        FROM skills 
+        (SELECT ks_code
+        FROM skills
         WHERE pos_code = 2))
-        
-		 SELECT distinct c_code,title 
-     FROM course c 
-		 WHERE NOT EXISTS( SELECT ks_code 
-                       FROM skill_set 
-                  MINUS 
+
+		 SELECT distinct c_code,title
+     FROM course c
+		 WHERE NOT EXISTS( SELECT ks_code
+                       FROM skill_set
+                  MINUS
                       SELECT ks_code
-                      FROM teaches t 
-                      WHERE t.c_code = c.c_code ); 
-                                 
+                      FROM teaches t
+                      WHERE t.c_code = c.c_code );
+
 
 -- 10. List the courses (course id and title) that each alone teaches all the missing knowledge/skills for a person to pursue a specific job.
 --**WORKS** RETURNS 1400(C_CODE) AND BIO 6000
@@ -125,15 +125,15 @@ WITH missing_skill AS --Missing skills the person needs for a certain job
                                       )
                         )
 SELECT distinct c_code, sec_no,format, complete_date, year, price, semester
-FROM course NATURAL JOIN section 
+FROM course NATURAL JOIN section
 WHERE sec_no = (SELECT distinct s.sec_no --Selecting a section that was in the Missing skills
                 FROM missing_skill, section s
-                WHERE s.complete_date = (SELECT MIN(complete_date) --Want to select the section that will complete the earliest 
+                WHERE s.complete_date = (SELECT MIN(complete_date) --Want to select the section that will complete the earliest
                                          FROM possible_courses NATURAL JOIN section
                                          WHERE complete_date > '20-APR-16')); --Make sure the section has not already occurred
-                                         
+
 -- 12. If query #9 returns nothing, then find the course sets with the minimum number of courses that their combination covers the given skill set.
--- The considered course sets will not include more than three courses.    
+-- The considered course sets will not include more than three courses.
     --**WORKS But included #13 as well RETURNS C_CODE 10, C_CODE 1200, C_CODE NULL--
 WITH missing_skill AS
       (
@@ -146,38 +146,38 @@ WITH missing_skill AS
 				WHERE per_id = 1000000
 				)
       ),
---the relationship between course set and its covering skills */ 
+--the relationship between course set and its covering skills */
 CourseSet_Skill(csetID, ks_code) AS (
 SELECT csetID, ks_code
-FROM CourseSet CSet JOIN teaches CS ON CSet.c_code1=CS.c_code 
+FROM CourseSet CSet JOIN teaches CS ON CSet.c_code1=CS.c_code
 
 UNION
 
 SELECT csetID, ks_code
-FROM CourseSet CSet JOIN teaches CS ON CSet.c_code2=CS.c_code 
+FROM CourseSet CSet JOIN teaches CS ON CSet.c_code2=CS.c_code
 
 UNION
 
 SELECT csetID, ks_code
 FROM CourseSet CSet JOIN teaches CS ON CSet.c_code3=CS.c_code
 ),
-/* use division to find those course sets that cover missing skills */ 
+/* use division to find those course sets that cover missing skills */
 Cover_CSet(csetID, sizet) AS (
 SELECT csetID, sizet
-FROM CourseSet CSet 
+FROM CourseSet CSet
 WHERE NOT EXISTS (
                   SELECT ks_code
                   FROM missing_skill
               MINUS
                   SELECT ks_code
-                  FROM CourseSet_Skill CSSk 
+                  FROM CourseSet_Skill CSSk
                   WHERE CSSk.csetID = Cset.csetID
-                 ) 
+                 )
                             )
 /* to find the smallest sets */
 SELECT c_code1, c_code2, c_code3
-FROM Cover_CSet NATURAL JOIN CourseSet 
-WHERE sizet = (SELECT MIN(sizet) 
+FROM Cover_CSet NATURAL JOIN CourseSet
+WHERE sizet = (SELECT MIN(sizet)
                FROM Cover_CSet);
 
 
@@ -195,38 +195,38 @@ WITH missing_skill AS
 				WHERE per_id = 1000000
 				)
       ),
---the relationship between course set and its covering skills */ 
+--the relationship between course set and its covering skills */
 CourseSet_Skill(csetID, ks_code) AS (
 SELECT csetID, ks_code
-FROM CourseSet CSet JOIN teaches CS ON CSet.c_code1=CS.c_code 
+FROM CourseSet CSet JOIN teaches CS ON CSet.c_code1=CS.c_code
 
 UNION
 
 SELECT csetID, ks_code
-FROM CourseSet CSet JOIN teaches CS ON CSet.c_code2=CS.c_code 
+FROM CourseSet CSet JOIN teaches CS ON CSet.c_code2=CS.c_code
 
 UNION
 
 SELECT csetID, ks_code
 FROM CourseSet CSet JOIN teaches CS ON CSet.c_code3=CS.c_code
 ),
-/* use division to find those course sets that cover missing skills */ 
+/* use division to find those course sets that cover missing skills */
 Cover_CSet(csetID, sizet) AS (
 SELECT csetID, sizet
-FROM CourseSet CSet 
+FROM CourseSet CSet
 WHERE NOT EXISTS (
                   SELECT ks_code
                   FROM missing_skill
               MINUS
                   SELECT ks_code
-                  FROM CourseSet_Skill CSSk 
+                  FROM CourseSet_Skill CSSk
                   WHERE CSSk.csetID = Cset.csetID
-                 ) 
+                 )
                             )
 /* to find the smallest sets */
 SELECT c_code1, c_code2, c_code3
 FROM Cover_CSet NATURAL JOIN CourseSet
-WHERE sizet = (SELECT MIN(sizet) 
+WHERE sizet = (SELECT MIN(sizet)
                FROM Cover_CSet);
 
 -- 14. Find the cheapest course choices to make up one’s skill gap by showing the courses to take and the total cost (by section prices).
@@ -245,39 +245,39 @@ WHERE sizet = (SELECT MIN(sizet)
           WHERE per_id = 1000000
           )
         ),
-  --the relationship between course set and its covering skills */ 
+  --the relationship between course set and its covering skills */
   CourseSet_Skill(csetID, ks_code) AS (
   SELECT csetID, ks_code
-  FROM CourseSet CSet JOIN teaches CS ON CSet.c_code1=CS.c_code 
-  
+  FROM CourseSet CSet JOIN teaches CS ON CSet.c_code1=CS.c_code
+
   UNION
-  
+
   SELECT csetID, ks_code
-  FROM CourseSet CSet JOIN teaches CS ON CSet.c_code2=CS.c_code 
-  
+  FROM CourseSet CSet JOIN teaches CS ON CSet.c_code2=CS.c_code
+
   UNION
-  
+
   SELECT csetID, ks_code
   FROM CourseSet CSet JOIN teaches CS ON CSet.c_code3=CS.c_code
   ),
-  /* use division to find those course sets that cover missing skills */ 
+  /* use division to find those course sets that cover missing skills */
   Cover_CSet(csetID, sizet) AS (
   SELECT csetID, sizet
-  FROM CourseSet CSet 
+  FROM CourseSet CSet
   WHERE NOT EXISTS (
                     SELECT ks_code
                     FROM missing_skill
                 MINUS
                     SELECT ks_code
-                    FROM CourseSet_Skill CSSk 
+                    FROM CourseSet_Skill CSSk
                     WHERE CSSk.csetID = Cset.csetID
-                   ) 
+                   )
                               ),
     total_cost AS (
 		SELECT csetID, (
                      (SELECT price FROM section C1 WHERE CS.c_code1 = C1.c_code)
 									 + (SELECT price FROM section C2 WHERE CS.c_code2 = C2.c_code)
-									 + (SELECT price FROM section C3 WHERE CS.c_code3 = C3.c_code) 
+									 + (SELECT price FROM section C3 WHERE CS.c_code3 = C3.c_code)
                    )AS total
 		FROM CourseSet CS NATURAL JOIN Cover_CSEt
     )
@@ -287,7 +287,7 @@ FROM total_cost
 ORDER BY total DESC;
 --FETCH FIRST 3 ROWS ONLY;
 
--- 15. List all the job profiles that a person is qualified for. WORKS
+-- 15. List all the job profiles that a person is qualified for. **WORKS**
 -- Returns game developer 10 and manager 3
 SELECT job_profile.pos_code, job_profile.title
 FROM Job_Profile job_profile
@@ -300,9 +300,9 @@ MINUS
 FROM Experience
 WHERE per_id = 2220000));
 
--- 16. Find the job with the highest pay rate for a person according to his/her skill qualification. WORKS
+-- 16. Find the job with the highest pay rate for a person according to his/her skill qualification. **WORKS**
 -- Returns game developer 50000
-WITH jobs-qualified AS
+WITH jobs_qualified AS
   (SELECT title, avg_pay
   FROM Job_Profile job_profile
   WHERE NOT EXISTS
@@ -314,10 +314,10 @@ WITH jobs-qualified AS
     FROM Experience
     WHERE per_id = 2220000)))
 SELECT title, avg_pay
-FROM jobs-qualified
-WHERE avg_pay = (SELECT MAX(avg_pay) FROM jobs-qualified);
+FROM jobs_qualified
+WHERE avg_pay = (SELECT MAX(avg_pay) FROM jobs_qualified);
 
--- 17. List all the names along with the emails of the persons who are qualified for a job profile. WORKS
+-- 17. List all the names along with the emails of the persons who are qualified for a job profile. **WORKS**
 -- Returns Lisa and Pujah with their emails
 SELECT name, email
 FROM Person peep
@@ -356,20 +356,20 @@ WHERE skill_count = (SELECT s)
 
 -- 19. List the skillID and the number of people in the missing-one list for a given job profile in the ascending order of
 -- the people counts. **WORKS** RETURNS KS_CODE(1410) NUM_PERSON(2)
-WITH missing_one AS( 
-	SELECT per_id FROM experience NATURAL JOIN skills WHERE pos_code=1 
-	GROUP BY(per_id) 
-	HAVING  
-	(SELECT COUNT(*) 
-			FROM skills 
-			WHERE pos_code=1 ) - COUNT(per_id) =1)  
-SELECT ks_code, count(*) as num_person 
-FROM knowledge_skill,missing_one M 
-WHERE ks_code= (SELECT ks_code FROM((SELECT ks_code FROM skills WHERE pos_code= 1) 
-				 					MINUS 
-        							(SELECT K.ks_code FROM experience K WHERE K.per_id = M.per_id)) ) 
+WITH missing_one AS(
+	SELECT per_id FROM experience NATURAL JOIN skills WHERE pos_code=1
+	GROUP BY(per_id)
+	HAVING
+	(SELECT COUNT(*)
+			FROM skills
+			WHERE pos_code=1 ) - COUNT(per_id) =1)
+SELECT ks_code, count(*) as num_person
+FROM knowledge_skill,missing_one M
+WHERE ks_code= (SELECT ks_code FROM((SELECT ks_code FROM skills WHERE pos_code= 1)
+				 					MINUS
+        							(SELECT K.ks_code FROM experience K WHERE K.per_id = M.per_id)) )
 				 					GROUP BY (ks_code) ORDER BY num_person ASC;
-				 
+
 -- 20. Suppose there is a new job profile that has nobody qualified.
 -- List the persons who miss the least number of skills and report the “least number”.
 --**WORKS** RETURNS 3330000(SABRINA) NEED = 1
@@ -392,21 +392,21 @@ WITH SKILLS_NEEDED(per_id, need) AS(
 -- up to k skills in the ASCending order of missing skills.              
 --**WORKS** RETURNS A LOT
 WITH SKILLS_NEEDED(per_id, need) AS(
-(SELECT per_id, ((SELECT COUNT(*) 
-                  FROM skills 
+(SELECT per_id, ((SELECT COUNT(*)
+                  FROM skills
                   WHERE pos_code = 11) - COUNT(per_id)) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
- 
+
                   FROM experience NATURAL JOIN skills
                   WHERE pos_code = 11
                   GROUP BY per_id))
  SELECT *
  FROM (SELECT per_id,need --People that need skills
-      FROM SKILLS_NEEDED sn 
-        
-        UNION 
-      
+      FROM SKILLS_NEEDED sn
+
+        UNION
+
       SELECT per_id,(SELECT COUNT(*) FROM skills WHERE pos_code = 11) -- Select the number of required skills for the job
-      FROM person p 
+      FROM person p
       WHERE NOT EXISTS (SELECT NULL
                         FROM skills_needed s_n
                         WHERE p.per_id = s_n.per_id)) --Where person is not in skills needed
@@ -419,23 +419,23 @@ ORDER BY need ASC;
 -- List each skillID and the number of people who need it in the DESCending order of the people counts.
 --**WORKS** KS_CODE(4400) NUM_PPL(4), KS_CODE(1510) NUM_PPL(3)
 WITH SKILLS_NEEDED(per_id, need) AS(
-(SELECT per_id, ((SELECT COUNT(*) 
-                  FROM skills 
+(SELECT per_id, ((SELECT COUNT(*)
+                  FROM skills
                   WHERE pos_code = 11) - COUNT(per_id)) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
- 
+
                   FROM experience NATURAL JOIN skills
                   WHERE pos_code = 11
                   GROUP BY per_id))
- 
+
 SELECT ks_code, COUNT(*) as num_ppl
-FROM skills s, skills_needed sn 
+FROM skills s, skills_needed sn
 WHERE EXISTS  (
                   SELECT * FROM ((SELECT ks_code
                                         FROM skills
                                         WHERE pos_code = 11)
-                                        
-                                        MINUS 
-                                        
+
+                                        MINUS
+
                                         (SELECT ks_code
                                         FROM experience e
                                         WHERE e.per_id = sn.per_id)
@@ -447,13 +447,13 @@ GROUP BY ks_code
 ORDER BY num_ppl DESC;
 
 -- 23. In a local or national crisis, we need to find all the people who once held a job of the special job-profile identifier.
--- Returns Pujah and Lisa WORKS
+-- Returns Pujah and Lisa **WORKS**
 SELECT per_id, name, pos_code
 FROM Person NATURAL JOIN Has_Job NATURAL JOIN Job
 WHERE pos_code = 3 AND end_date IS NOT NULL;
 
 -- 24. Find all the unemployed people who once held a job of the given job-profile identifier.
--- Returns Samantha WORKS
+-- Returns Samantha **WORKS**
 WITH everyone AS
   (SELECT *
   FROM has_job FULL OUTER JOIN person USING (per_id)),
@@ -469,7 +469,7 @@ FROM job NATURAL JOIN has_job NATURAL JOIN unemployed
 WHERE pos_code = 2;
 
 -- 25. Find out the biggest employer in terms of number of employees or the total amount of salaries and wages paid to
--- employees. WORKS
+-- employees. **WORKS**
 -- Returns company 800 and 100 both containing 2 employees
 WITH employed AS
 (SELECT *
