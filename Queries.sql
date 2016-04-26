@@ -130,16 +130,6 @@ WITH missing_skill AS --Missing skills the person needs for a certain job
 SELECT c_code, sec_no,format, complete_date, year, price, semester
 FROM possible_section
 WHERE complete_date = (SELECT MIN(complete_date) FROM possible_section);
----------------------------------------------------------------------------------------
--- Tu suggests to change this bottom part, however, when I applied his changes, did not return anything. Need to
--- look into it some more. Changes are above.
-SELECT distinct c_code, sec_no,format, complete_date, year, price, semester
-FROM course NATURAL JOIN section
-WHERE sec_no = (SELECT distinct s.sec_no --Selecting a section that was in the Missing skills
-                FROM missing_skill, section s
-                WHERE s.complete_date = (SELECT MIN(complete_date) --Want to select the section that will complete the earliest
-                                         FROM possible_courses NATURAL JOIN section
-                                         WHERE complete_date > '20-APR-16')); --Make sure the section has not already occurred
 
 -- 12. If query #9 returns nothing, then find the course sets with the minimum number of courses that their combination covers the given skill set.
 -- The considered course sets will not include more than three courses.
@@ -359,18 +349,6 @@ WITH skill_count(per_id, skill_count) AS (
 SELECT per_id
 FROM skill_count
 WHERE skill_count = (SELECT COUNT(*) -1 FROM skills WHERE pos_code =1);
-------------------------------------------------
---The query below is the old one 
-------------------------------------------------
-
-SELECT per_id
-FROM experience NATURAL JOIN skills
-WHERE pos_code = 1
-GROUP BY(per_id)
-HAVING
-  (SELECT COUNT (*)
-  FROM skills
-  WHERE pos_code = 1) - COUNT(per_id) = 1;
 
 -- 19. List the skillID and the number of people in the missing-one list for a given job profile in the ascending order of
 -- the people counts. **WORKS** RETURNS KS_CODE(1410) NUM_PERSON(2)
