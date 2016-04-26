@@ -53,13 +53,13 @@ SELECT ks_code, title
 FROM Skills NATURAL JOIN Knowledge_Skill
 WHERE pos_code = 1; -- input actual pos_code
 
--- 8. List a person’s missing knowledge/skills for a specific job in a readable format. **WORKS** Returns Database and Java
+-- 8. List a person’s missing knowledge/skills for a specific job in a readable format. **WORKS** Returns Java
 WITH missing_skills AS
 ((SELECT ks_code FROM Skills WHERE pos_code = 1) -- input pos_code for the job
 MINUS
 (SELECT ks_code FROM Experience WHERE per_id = 3330000)) -- input actual id
 
-SELECT title
+SELECT title, ks_code
 FROM Knowledge_Skill NATURAL JOIN missing_skills;
 
 -- 9. Find the courses each of which alone can cover a given skill set. given a set of skills (i.e. more than one skill) find courses which offer each of the set of skills
@@ -123,7 +123,16 @@ WITH missing_skill AS --Missing skills the person needs for a certain job
                                       FROM teaches t
                                       WHERE t.c_code = c.c_code)
                                       )
-                        )
+                        ),
+    possible_section AS (SELECT *
+                          FROM possible_courses NATURAL JOIN section
+                          WHERE complete_date > '20-APR-16')
+SELECT c_code, sec_no,format, complete_date, year, price, semester
+FROM possible_section
+WHERE complete_date = (SELECT MIN(complete_date) FROM possible_section);
+---------------------------------------------------------------------------------------
+-- Tu suggests to change this bottom part, however, when I applied his changes, did not return anything. Need to
+-- look into it some more. Changes are above.
 SELECT distinct c_code, sec_no,format, complete_date, year, price, semester
 FROM course NATURAL JOIN section
 WHERE sec_no = (SELECT distinct s.sec_no --Selecting a section that was in the Missing skills
