@@ -11,6 +11,10 @@ public class Course{
     private String status;
     private String level;
     private Double retail_price;
+    
+    public Course(){
+    	
+    }
 
     public Course(int id, String title, String description, String status, String level,
                   Double retail_price){
@@ -23,12 +27,18 @@ public class Course{
 
     }
 
-    public void addCourse(){
-
-    }
-
     public void deleteCourse(){
 
 
+    }
+    
+    public String addCourse(){
+		String str = "INSERT INTO course VALUES ('"+level+"' ,'"+status+"' ,'"+description+ "' , '" +title+ "', " +c_code+ ", " +retail_price+ ")";
+		return str;
+    }
+    
+    public String changeStatus(int c_code, String status){
+    	String str = "UPDATE course SET status = '"+status+"' WHERE c_code = "+c_code+"";
+		return str;
     }
 }

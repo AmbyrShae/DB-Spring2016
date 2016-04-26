@@ -32,6 +32,7 @@ public class LoginMenu extends javax.swing.JFrame {
 	private JLabel generalLab;
 	private JLabel searchLab;
 	private JLabel recruitLab;
+	private JLabel courseLab;
 	
 	private JButton mySQLBut;
 	private JButton tabModBut;
@@ -44,6 +45,8 @@ public class LoginMenu extends javax.swing.JFrame {
 	private JButton recruitBut;
 	private JButton trainingTrackBut;
 	private JButton addEmployeeBut;
+	private JButton addCourseBut;
+	private JButton changeCourseStatusBut;
 	
 	private JTextField passwdField;
 	private JTextField usernameField;
@@ -54,6 +57,8 @@ public class LoginMenu extends javax.swing.JFrame {
 	private JobApply ja;
 	private AddEmployee ae;
 	private RecruitEmployee re;
+	private AddCourse ac;
+	private ChangeCourseStatus ccs;
 	
 	private JTextArea msgArea;
 	private JTextField sidField;
@@ -232,6 +237,36 @@ public class LoginMenu extends javax.swing.JFrame {
 				});
 			}
 			{
+				courseLab = new JLabel();
+				getContentPane().add(courseLab);
+				courseLab.setText("Course");
+				courseLab.setBounds(270, 370, 175, 28);
+			}
+			{
+				addCourseBut = new JButton();
+				getContentPane().add(addCourseBut);
+				addCourseBut.setText("Add course");
+				addCourseBut.setBounds(200, 400, 175, 28);
+				addCourseBut.setEnabled(false);
+				addCourseBut.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						addCourseButActionPerformed(evt);
+					}
+				});
+			}
+			{
+				changeCourseStatusBut = new JButton();
+				getContentPane().add(changeCourseStatusBut);
+				changeCourseStatusBut.setText("Change Course Status");
+				changeCourseStatusBut.setBounds(200, 430, 175, 28);
+				changeCourseStatusBut.setEnabled(false);
+				changeCourseStatusBut.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						changeCourseStatusButActionPerformed(evt);
+					}
+				});
+			}
+			{
 				hostLab = new JLabel();
 				getContentPane().add(hostLab);
 				hostLab.setText("database host");
@@ -298,6 +333,8 @@ public class LoginMenu extends javax.swing.JFrame {
 			ja = new JobApply(conn);
 			ae = new AddEmployee(conn);
 			re= new RecruitEmployee(conn);
+			ac= new AddCourse(conn);
+			ccs = new ChangeCourseStatus(conn);
 			tabViewBut.setEnabled(true);
 			tabSelectBut.setEnabled(true);
 			tabModBut.setEnabled(true);
@@ -306,6 +343,8 @@ public class LoginMenu extends javax.swing.JFrame {
 			jobSearchBut.setEnabled(true);
 			recruitBut.setEnabled(true);
 			addEmployeeBut.setEnabled(true);
+			addCourseBut.setEnabled(true);
+			changeCourseStatusBut.setEnabled(true);
 		} catch (java.sql.SQLException sqle) {
 			StringWriter strMsg = new StringWriter();
 			PrintWriter prtMsg = new PrintWriter(strMsg);
@@ -363,5 +402,15 @@ public class LoginMenu extends javax.swing.JFrame {
 	private void trainingTrackButActionPerformed(ActionEvent evt) {
 		//System.out.println("mySQLBut.actionPerformed, event=" + evt);
 
+	}
+	private void addCourseButActionPerformed(ActionEvent evt) {
+		//System.out.println("mySQLBut.actionPerformed, event=" + evt);
+		AddCourseView cv = new AddCourseView(ac);
+		cv.setVisible(true);
+	}
+	private void changeCourseStatusButActionPerformed(ActionEvent evt) {
+		//System.out.println("mySQLBut.actionPerformed, event=" + evt);
+		ChangeCourseStatusView ccsv = new ChangeCourseStatusView(ccs);
+		ccsv.setVisible(true);
 	}
 }
