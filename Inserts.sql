@@ -17,8 +17,13 @@ insert into job_company values(12, 150);
 insert into job_company values(13, 800);
 insert into job_company values(14, 800);
 insert into job_company values(15, 200);
+insert into person values(9990000, 'Dew', 'Florida','Orlando','Mickey', 82009, 'dew@yahoo.com', 'male');
+insert into experience values(9990000, 1100);
+insert into experience values(9990000, 1210);
+insert into experience values(9990000, 1310);
 
---added to Bre's database 
+
+--added to Bre's database
 insert into job_profile values(90000.00, 'a job', 'president', 11); --**No one qualifies for
 insert into course values('medium', 'active', 'sql', 'sql 101', 1200, 200.00); --NEW
 insert into knowledge_skill values(1410, 'database', 'database lab', 'medium'); --NEW

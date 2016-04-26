@@ -492,10 +492,8 @@ SELECT comp_id, employees
 FROM count_employees
 WHERE employees = (SELECT MAX(employees) FROM count_employees);
 
--- 28. Find the job profiles that have the most openings due to lack of qualified workers. NOT WORKING
--- As of now, I find all the job openings, count them and list them in desc order by their count
--- and correlation to pos code. Now I need to ignore a position by finding people who are qualified
--- for the job because all we care about is who we can train for a job.
+-- 28. Find the job profiles that have the most openings due to lack of qualified workers. **WORKS**
+-- Returns manager 2 openings, game developer 1 openings, bio teacher 1 opening
 WITH everyone AS
   (SELECT *
   FROM has_job FULL OUTER JOIN person USING (per_id)),
@@ -514,11 +512,30 @@ openings AS
       MINUS
       (SELECT job_code
       FROM has_job
-      WHERE end_date IS NULL)) NATURAL JOIN job)
-SELECT pos_code,COUNT(job_code) AS numOfOpenings
-FROM openings
-GROUP BY pos_code
-ORDER BY numOfOpenings DESC;
+      WHERE end_date IS NULL)) NATURAL JOIN job),
+qualified AS
+  (SELECT DISTINCT name, per_id, pos_code
+    FROM unemployed u, openings o
+    WHERE NOT EXISTS (SELECT ks_code
+                      FROM openings NATURAL JOIN skills
+                      WHERE job_code = o.job_code
+                      MINUS
+                      SELECT ks_code
+                      FROM unemployed NATURAL JOIN experience
+                      WHERE per_id = u.per_id)),
+count_openings AS
+  (SELECT pos_code,COUNT(job_code) AS numOfOpenings
+    FROM openings
+    GROUP BY pos_code),
+count_qualified AS
+  (SELECT COUNT(pos_code) AS numOfQual, pos_code
+  FROM qualified
+  GROUP BY pos_code)
+
+SELECT title, pos_code, numofopenings - coalesce(numOfQual,0) AS openings
+FROM (count_qualified FULL OUTER JOIN count_openings USING (pos_code)) NATURAL JOIN job_profile
+WHERE numofopenings - coalesce(numOfQual,0) > 0
+ORDER BY openings DESC;
 
 -- 29. Find the courses that can help most jobless people find a job by training them toward the job profiles that have the
 -- most openings due to lack of qualified workers.
