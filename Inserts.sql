@@ -1,3 +1,5 @@
+-- B. Crump, A. Jarrell
+
 -- added data to make DB more verbose ARJ
 insert into person values(1234567, 'Pujah', 'Louisiana','New Orleans','Canal', 70113, 'pujah@yahoo.com', 'female');
 insert into experience values(1234567, 3300);

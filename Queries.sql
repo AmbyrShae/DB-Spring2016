@@ -1,3 +1,5 @@
+-- B. Crump, A. Jarrell
+
 -- 1. List a company’s workers by names. **WORKS** Returns Dave and ALEX for GE
 SELECT name
 FROM Job_company NATURAL JOIN Has_Job NATURAL JOIN Person

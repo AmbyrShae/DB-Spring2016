@@ -1,3 +1,5 @@
+-- B. Crump, A. Jarrell
+
 CREATE TABLE Job_Profile
 (
   avg_pay NUMERIC(10,2) NOT NULL,
