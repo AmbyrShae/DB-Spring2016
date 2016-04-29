@@ -18,7 +18,7 @@ WHERE pay_type = 'salary' GROUP BY comp_id),
 HOURLY AS
 (SELECT comp_id, SUM(pay_rate* 1920) AS worker_salary
 FROM Job NATURAL JOIN job_company
-WHERE pay_type = 'wage' GROUP BY comp_id)
+WHERE pay_type = 'wage' GROUP BY comp_id),
 
 labor_cost AS ((select * FROM salary) UNION (select * FROM hourly))
 
@@ -28,8 +28,8 @@ GROUP BY comp_id
 ORDER BY total DESC;
 
 -- 4. Find all the jobs a person is currently holding. **WORKS** Returns 10 For Game Developer
-SELECT job_code
-FROM Has_Job
+SELECT job_code, title
+FROM Has_Job NATURAL JOIN job NATURAL JOIN job_profile
 WHERE end_date IS NULL AND per_id = 2220000; -- input actual id
 
 -- 5. List a person’s knowledge/skills in a readable format. **WORKS** Returns 4400(Public speaking) and 3300(Management)
@@ -39,14 +39,12 @@ WHERE per_id = 3330000; -- input actual id
 
 -- 6. List the skill gap of a worker between his/her job(s) and his/her skills. **WORKS** Returns skill 1410 Missing skill is SQL
 (SELECT ks_code
-  FROM Skills NATURAL JOIN job_profile NATURAL JOIN job
-  WHERE job_code = (SELECT job_code
-                    FROM has_job
-                    WHERE end_date is null AND per_id = 1000000))
+FROM skills NATURAL JOIN job_profile NATURAL JOIN job
+WHERE job_code = (SELECT job_code FROM has_job WHERE end_date IS NULL AND per_id = 1000000))
 MINUS
 (SELECT ks_code
-  FROM Experience
-  WHERE per_id = 1000000);
+FROM Experience
+WHERE per_id = 1000000);
   
  -- 7. List the required knowledge/skills of a job profile in a readable format. **WORKS** Returns 1410(Database) and 2000(Java)
 SELECT ks_code, title
@@ -145,7 +143,7 @@ WITH missing_skill AS
 				WHERE per_id = 1000000
 				)
       ),
---the relationship between course set and its covering skills */
+--the relationship between course set and its covering skills
 CourseSet_Skill(csetID, ks_code) AS (
 SELECT csetID, ks_code
 FROM CourseSet CSet JOIN teaches CS ON CSet.c_code1=CS.c_code
@@ -160,7 +158,7 @@ UNION
 SELECT csetID, ks_code
 FROM CourseSet CSet JOIN teaches CS ON CSet.c_code3=CS.c_code
 ),
-/* use division to find those course sets that cover missing skills */
+--use division to find those course sets that cover missing skills
 Cover_CSet(csetID, sizet) AS (
 SELECT csetID, sizet
 FROM CourseSet CSet
@@ -173,7 +171,7 @@ WHERE NOT EXISTS (
                   WHERE CSSk.csetID = Cset.csetID
                  )
                             )
-/* to find the smallest sets */
+--to find the smallest sets
 SELECT c_code1, c_code2, c_code3
 FROM Cover_CSet NATURAL JOIN CourseSet
 WHERE sizet = (SELECT MIN(sizet)
@@ -325,6 +323,7 @@ WHERE amount = (SELECT MAX(amount) FROM jobs_qualified NATURAL JOIN job_pay NATU
 
 -- 17. List all the names along with the emails of the persons who are qualified for a job profile. **WORKS**
 -- Returns Lisa and Pujah with their emails
+-- AND Sabrina
 SELECT name, email
 FROM Person peep
 WHERE NOT EXISTS
@@ -370,18 +369,14 @@ WHERE ks_code= (SELECT ks_code FROM((SELECT ks_code FROM skills WHERE pos_code= 
 -- List the persons who miss the least number of skills and report the “least number”.
 --**WORKS** RETURNS 3330000(SABRINA) NEED = 1
 WITH SKILLS_NEEDED(per_id, need) AS(
-(SELECT per_id, ((SELECT COUNT(*)
-                  FROM skills
-                  WHERE pos_code = 11) - COUNT(per_id)) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
-
-                  FROM experience NATURAL JOIN skills
-                  WHERE pos_code = 11
-                  GROUP BY per_id))
+(SELECT per_id, ((SELECT COUNT(*) FROM skills WHERE pos_code = 11) - COUNT(per_id)) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
+FROM experience NATURAL JOIN skills
+WHERE pos_code = 11
+GROUP BY per_id))
 
  SELECT per_id, need
  FROM SKILLS_NEEDED
- WHERE need= (SELECT MIN(need)
-              FROM SKILLS_NEEDED);
+ WHERE need= (SELECT MIN(need) FROM SKILLS_NEEDED);
               
 -- 21. For a specified job profile and a given small number k, make a “missing-k” list
 -- that lists the people’s IDs and the number of missing skills for the people who miss only

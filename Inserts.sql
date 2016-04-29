@@ -21,6 +21,14 @@ insert into person values(9990000, 'Dew', 'Florida','Orlando','Mickey', 82009, '
 insert into experience values(9990000, 1100);
 insert into experience values(9990000, 1210);
 insert into experience values(9990000, 1310);
+--Tu's
+INSERT INTO CourseSet
+SELECT CourseSet_seq.NEXTVAL, C1.c_code, C2.c_code, null, 2 FROM Course C1, Course C2
+WHERE C1.c_code < C2.c_code;
+
+INSERT INTO CourseSet
+SELECT CourseSet_seq.NEXTVAL, C1.c_code, C2.c_code, C3.c_code, 3 FROM Course C1, Course C2, Course C3
+WHERE C1.c_code < C2.c_code AND C2.c_code < C3.c_code;
 
 
 --added to Bre's database
