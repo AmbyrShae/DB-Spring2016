@@ -101,7 +101,7 @@ WITH skill_set AS
     SELECT ks_code FROM experience WHERE per_id = 1000000
   )
 
-SELECT distinct c_code, title
+SELECT c_code, title
 FROM course c
 WHERE NOT EXISTS
   (
@@ -222,7 +222,6 @@ WHERE sizet = (SELECT MIN(sizet) FROM Cover_CSet);
 -- The considered course sets will not include more than three courses.
 
 --**THINK IT WORKS Returns CSETID = 413 and TOTAL = 300**--
---PROBLEM IS THAT IF THE COURSE SET DOES NOT CONTAIN 3 COURSES THEN ONE OF THEM IS NULL THEN THE TOTAL PRICE WILL BE NULL
 WITH missing_skill AS
   (
     SELECT ks_code FROM skills WHERE pos_code = 11
@@ -265,8 +264,8 @@ total_cost AS
 /* to find the cheapest sets */
 SELECT *
 FROM total_cost
-ORDER BY total DESC;
---FETCH FIRST 3 ROWS ONLY;
+ORDER BY total DESC
+FETCH FIRST 1 ROWS ONLY;
 
 -- 15. List all the job profiles that a person is qualified for. **WORKS**
 -- Returns game developer 10 and manager 3

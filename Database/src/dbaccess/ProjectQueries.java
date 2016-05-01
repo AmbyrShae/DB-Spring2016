@@ -101,7 +101,7 @@ public class ProjectQueries {
 				+"FROM CourseSet CSet JOIN teaches CS ON CSet.c_code2=CS.c_code UNION SELECT csetID, ks_code FROM CourseSet CSet JOIN teaches CS ON CSet.c_code3=CS.c_code), "
 				+"Cover_CSet(csetID, sizet) AS (SELECT csetID, sizet FROM CourseSet CSet WHERE NOT EXISTS (SELECT ks_code FROM missing_skill MINUS SELECT ks_code FROM CourseSet_Skill CSSk "
 				+"WHERE CSSk.csetID = Cset.csetID)), total_cost AS (SELECT csetID, ((SELECT price FROM section C1 WHERE CS.c_code1 = C1.c_code) + (SELECT price FROM section C2 WHERE CS.c_code2 = C2.c_code) "
-				+ "+ (SELECT price FROM section C3 WHERE CS.c_code3 = C3.c_code))AS total FROM CourseSet CS NATURAL JOIN Cover_CSEt) SELECT * FROM total_cost ORDER BY total DESC");
+				+ "+ (SELECT price FROM section C3 WHERE CS.c_code3 = C3.c_code))AS total FROM CourseSet CS NATURAL JOIN Cover_CSEt) SELECT * FROM total_cost ORDER BY total DESC FETCH FIRST 1 ROWS ONLY");
 		
 		//14a
 		
