@@ -83,7 +83,7 @@ WITH skill_set AS
     WHERE pos_code = 2
   )
 
-SELECT distinct c_code,title
+SELECT c_code,title
 FROM course c
 WHERE NOT EXISTS
   (
@@ -361,7 +361,7 @@ ORDER BY num_person ASC;
 --**WORKS** RETURNS 3330000(SABRINA) NEED = 1
 WITH SKILLS_NEEDED(per_id, need) AS
 (
-  SELECT per_id, (SELECT COUNT(*) FROM skills WHERE pos_code = 11) - COUNT(per_id) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
+  SELECT per_id, (SELECT COUNT(*) FROM skills WHERE pos_code = 11) - COUNT(per_id) --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
   FROM experience NATURAL JOIN skills
   WHERE pos_code = 11
   GROUP BY per_id
@@ -377,7 +377,7 @@ WHERE need = (SELECT MIN(need) FROM SKILLS_NEEDED);
 --**WORKS** RETURNS A LOT
 WITH SKILLS_NEEDED(per_id, need) AS
   (
-    SELECT per_id, (SELECT COUNT(*) FROM skills WHERE pos_code = 11) - COUNT(per_id) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
+    SELECT per_id, (SELECT COUNT(*) FROM skills WHERE pos_code = 11) - COUNT(per_id) --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
     FROM experience NATURAL JOIN skills
     WHERE pos_code = 11
     GROUP BY per_id
@@ -401,7 +401,7 @@ ORDER BY need ASC;
 --**WORKS** KS_CODE(1210) NUM_PPL(1), KS_CODE(1310) NUM_PPL(1)
 WITH SKILLS_NEEDED(per_id, need) AS
   (
-    SELECT per_id, (SELECT COUNT(*) FROM skills WHERE pos_code = 2) - COUNT(per_id) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
+    SELECT per_id, (SELECT COUNT(*) FROM skills WHERE pos_code = 2) - COUNT(per_id) --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
     FROM experience NATURAL JOIN skills
     WHERE pos_code = 2
     GROUP BY per_id
