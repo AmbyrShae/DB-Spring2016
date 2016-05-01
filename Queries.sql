@@ -53,7 +53,7 @@ SELECT ks_code, title
 FROM Skills NATURAL JOIN Knowledge_Skill
 WHERE pos_code = 1; -- input actual pos_code
 
--- 8. List a person’s missing knowledge/skills for a specific job in a readable format. **WORKS** Returns Java
+-- 8. List a person’s missing knowledge/skills for a specific job in a readable format. **WORKS** Returns Java(2000) and Database(1410)
 WITH missing_skills AS
 ((SELECT ks_code FROM Skills WHERE pos_code = 1) -- input pos_code for the job
 MINUS
@@ -133,7 +133,7 @@ WHERE complete_date = (SELECT MIN(complete_date) FROM possible_section);
 
 -- 12. If query #9 returns nothing, then find the course sets with the minimum number of courses that their combination covers the given skill set.
 -- The considered course sets will not include more than three courses.
-    --**WORKS But included #13 as well RETURNS C_CODE 10, C_CODE 1200, C_CODE NULL--
+    --**WORKS But included #13 as well RETURNS C_CODE1 300, C_CODE2 1000, C_CODE3 1100--
 WITH missing_skill AS
       (
 				(SELECT ks_code
@@ -326,6 +326,7 @@ WHERE amount = (SELECT MAX(amount) FROM jobs_qualified NATURAL JOIN job_pay NATU
 -- 17. List all the names along with the emails of the persons who are qualified for a job profile. **WORKS**
 -- Returns Lisa and Pujah with their emails
 -- AND Sabrina
+-- AND Breena *BC*
 SELECT name, email
 FROM Person peep
 WHERE NOT EXISTS
@@ -411,6 +412,7 @@ ORDER BY need ASC;
 -- in Question 22. Find every skill that is needed BY at least one person in the given missing-k list.
 -- List each skillID and the number of people who need it in the DESCending order of the people counts.
 --**WORKS** KS_CODE(4400) NUM_PPL(4), KS_CODE(1510) NUM_PPL(3)
+--KS_CODE(4400) NUM_PPL(6), KS_CODE(1510) NUM_PPL(4) *BC*
 WITH SKILLS_NEEDED(per_id, need) AS(
 (SELECT per_id, ((SELECT COUNT(*)
                   FROM skills
