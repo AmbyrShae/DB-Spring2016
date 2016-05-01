@@ -133,12 +133,12 @@ WHERE complete_date = (SELECT MIN(complete_date) FROM possible_section);
 
 -- 12. If query #9 returns nothing, then find the course sets with the minimum number of courses that their combination covers the given skill set.
 -- The considered course sets will not include more than three courses.
-    --**WORKS But included #13 as well RETURNS C_CODE1 300, C_CODE2 1000, C_CODE3 1100--
+    --**WORKS But included #13 as well RETURNS C_CODE1 220, C_CODE2 350, C_CODE3 1300--
 WITH missing_skill AS
       (
 				(SELECT ks_code
 				FROM skills
-				WHERE pos_code = 2)
+				WHERE pos_code = 11)
 				MINUS
 				(SELECT ks_code
 				FROM experience
@@ -187,7 +187,7 @@ WITH missing_skill AS
       (
 				(SELECT ks_code
 				FROM skills
-				WHERE pos_code = 2)
+				WHERE pos_code = 11)
 				MINUS
 				(SELECT ks_code
 				FROM experience
@@ -237,7 +237,7 @@ WHERE sizet = (SELECT MIN(sizet)
         (
           (SELECT ks_code
           FROM skills
-          WHERE pos_code = 2)
+          WHERE pos_code = 11)
           MINUS
           (SELECT ks_code
           FROM experience
@@ -411,15 +411,14 @@ ORDER BY need ASC;
 -- 22. Given a job profile and its corresponding missing-k list specified
 -- in Question 22. Find every skill that is needed BY at least one person in the given missing-k list.
 -- List each skillID and the number of people who need it in the DESCending order of the people counts.
---**WORKS** KS_CODE(4400) NUM_PPL(4), KS_CODE(1510) NUM_PPL(3)
---KS_CODE(4400) NUM_PPL(6), KS_CODE(1510) NUM_PPL(4) *BC*
+--**WORKS** KS_CODE(1210) NUM_PPL(1), KS_CODE(1310) NUM_PPL(1)
 WITH SKILLS_NEEDED(per_id, need) AS(
 (SELECT per_id, ((SELECT COUNT(*)
                   FROM skills
-                  WHERE pos_code = 11) - COUNT(per_id)) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
+                  WHERE pos_code = 2) - COUNT(per_id)) AS NEED --Number of skills required to be the President minus the number of skills the person has. Therefore rename it as Need because its what is leftover
 
                   FROM experience NATURAL JOIN skills
-                  WHERE pos_code = 11
+                  WHERE pos_code = 2
                   GROUP BY per_id))
 
 SELECT ks_code, COUNT(*) as num_ppl
@@ -427,7 +426,7 @@ FROM skills s, skills_needed sn
 WHERE EXISTS  (
                   SELECT * FROM ((SELECT ks_code
                                         FROM skills
-                                        WHERE pos_code = 11)
+                                        WHERE pos_code = 2)
 
                                         MINUS
 
@@ -479,7 +478,7 @@ FROM count_employees
 WHERE employees = (SELECT MAX(employees) FROM count_employees);
 
 -- 28. Find the job profiles that have the most openings due to lack of qualified workers. **WORKS**
--- Returns manager 2 openings, game developer 1 openings, bio teacher 1 opening
+-- Returns manager 2 openings, game developer 1 openings, bio teacher 1 opening, president 1 opening
 WITH everyone AS
   (SELECT *
   FROM has_job FULL OUTER JOIN person USING (per_id)),

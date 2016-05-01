@@ -23,6 +23,9 @@ insert into person values(9990000, 'Dew', 'Florida','Orlando','Mickey', 82009, '
 insert into experience values(9990000, 1100);
 insert into experience values(9990000, 1210);
 insert into experience values(9990000, 1310);
+insert into job values(16, 'part-time', 30.00, 'wage', 2);
+insert into job_company values(16, 150);
+
 --Tu's
 INSERT INTO CourseSet
 SELECT CourseSet_seq.NEXTVAL, C1.c_code, C2.c_code, null, 2 FROM Course C1, Course C2
